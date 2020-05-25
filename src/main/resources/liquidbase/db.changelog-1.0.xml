@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="1.0.0" author="mkudryavtsev">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_change_date" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="mkudryavtsev">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.2" author="mkudryavtsev">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT"/>
+            <column name="role_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.3" author="mkudryavtsev">
+        <addForeignKeyConstraint baseTableName="user_roles"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_roles_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+    </changeSet>
+
+    <changeSet id="1.0.4" author="mkudryavtsev">
+        <addForeignKeyConstraint baseTableName="user_roles"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_user_roles_role"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+    </changeSet>
+
+    <changeSet id="1.0.5" author="mkudryavtsev">
+        <createTable tableName="skills">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.6" author="mkudryavtsev">
+        <createTable tableName="accounts">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_data" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.7" author="mkudryavtsev">
+        <createTable tableName="developers">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="speciality" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="developers"
+                                 baseColumnNames="account_id"
+                                 constraintName="fk_developer_account"
+                                 referencedTableName="accounts"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="1.0.8" author="mkudryavtsev">
+        <createTable tableName="developer_skills">
+            <column name="developer_id" type="BIGINT"/>
+            <column name="skill_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.9" author="mkudryavtsev">
+        <addForeignKeyConstraint baseTableName="developer_skills"
+                                 baseColumnNames="developer_id"
+                                 constraintName="fk_developer_skills_developer"
+                                 referencedTableName="developers"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+
+    </changeSet>
+
+    <changeSet id="1.0.10" author="mkudryavtsev">
+        <addForeignKeyConstraint baseTableName="developer_skills"
+                                 baseColumnNames="skill_id"
+                                 constraintName="fk_developer_skills_skill"
+                                 referencedTableName="skills"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="1.0.11" author="mkudryavtsev">
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_MODERATOR"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
